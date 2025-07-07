@@ -3,117 +3,135 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Matrix AI Mini App</title>
+<title>Matrix AI MiniApp</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 10px; background: #111; color: #eee; }
-  button { margin: 5px 0; padding: 10px; width: 100%; font-size: 18px; background: #222; color: #eee; border: none; border-radius: 6px; cursor: pointer; }
-  button:hover { background: #444; }
-  #output { margin-top: 15px; white-space: pre-wrap; }
+  body { font-family: Arial, sans-serif; margin: 20px; background: #111; color: #eee; }
+  h1, h2 { color: #f0a500; }
   .hidden { display: none; }
-  #backBtn { margin-top: 10px; background: #555; }
-  input { width: 100%; padding: 8px; font-size: 16px; border-radius: 6px; border: 1px solid #444; margin-bottom: 10px; background: #222; color: #eee; }
-  label { margin-bottom: 4px; display: block; }
+  button { background: #f0a500; border: none; padding: 10px 20px; margin: 10px 0; cursor: pointer; color: #111; font-weight: bold; border-radius: 4px; }
+  button.backBtn { background: #555; color: #eee; }
+  input[type="text"] { padding: 8px; width: 100%; max-width: 250px; margin: 5px 0 15px; border-radius: 4px; border: none; }
+  #output { white-space: pre-wrap; margin-top: 10px; }
 </style>
 </head>
 <body>
 
 <div id="mainMenu">
-  <h2>Matrix AI - Главное меню</h2>
-  <button id="btnPersonality">🧬 Анализ личности</button>
-  <button id="btnCompatibility">❤️ Совместимость</button>
-  <button id="btnForecasts">📅 Прогнозы</button>
-  <button id="btnAstrology">🌌 Астрология</button>
-  <button id="btnPalmistry">✋ Хиромантия</button>
-  <button id="btnCardOfDay">🧩 Карта дня</button>
-  <button id="btnStarsShop">🌟 Stars / Магазин</button>
-  <button id="btnHistory">📖 История раскладов</button>
+  <h1>Matrix AI MiniApp</h1>
+  <button id="btnAnalyze">🔍 Анализ личности</button><br/>
+  <button id="btnForecasts">📅 Прогнозы</button><br/>
+  <button id="btnCardOfDay">🧩 Карта дня</button><br/>
+  <div>Версия: 1.0</div>
 </div>
 
-<div id="personalitySection" class="hidden">
-  <h2>🧬 Анализ личности</h2>
-  <label for="personBirthdate">Введите дату рождения (ДД.ММ.ГГГГ):</label>
-  <input type="text" id="personBirthdate" placeholder="01.01.2000" />
-  <button id="startPersonality">Начать анализ</button>
-  <button id="backFromPersonality" class="backBtn">Назад</button>
-  <div id="personalityOutput"></div>
+<!-- Анализ личности -->
+<div id="analyzeSection" class="hidden">
+  <h2>🔍 Анализ личности</h2>
+  <label for="birthdateInput">Введите дату рождения (ДД.ММ.ГГГГ):</label><br/>
+  <input type="text" id="birthdateInput" placeholder="01.01.2000" />
+  <br/>
+  <button id="startAnalyze">Запустить анализ</button>
+  <button id="backFromAnalyze" class="backBtn">Назад</button>
+  <div id="output"></div>
 </div>
 
-<div id="compatibilitySection" class="hidden">
-  <h2>❤️ Совместимость</h2>
-  <label for="firstBirthdate">Дата рождения 1-го человека (ДД.ММ.ГГГГ):</label>
-  <input type="text" id="firstBirthdate" placeholder="01.01.2000" />
-  <label for="secondBirthdate">Дата рождения 2-го человека (ДД.ММ.ГГГГ):</label>
-  <input type="text" id="secondBirthdate" placeholder="01.01.2000" />
-  <button id="startCompatibility">Проверить совместимость</button>
-  <button id="backFromCompatibility" class="backBtn">Назад</button>
-  <div id="compatibilityOutput"></div>
+<!-- Прогнозы -->
+<div id="forecastsSection" class="hidden">
+  <h2>📅 Прогнозы</h2>
+  <label for="forecastBirthdate">Введите дату рождения (ДД.ММ.ГГГГ):</label><br/>
+  <input type="text" id="forecastBirthdate" placeholder="01.01.2000" />
+  <br/>
+  <button id="startForecasts">Показать прогноз</button>
+  <button id="backFromForecasts" class="backBtn">Назад</button>
+  <div id="forecastOutput"></div>
 </div>
 
-<!-- Остальные секции по аналогии... -->
+<!-- Карта дня -->
+<div id="cardOfDaySection" class="hidden">
+  <h2>🧩 Карта дня</h2>
+  <button id="showCardOfDay">Показать карту дня</button>
+  <button id="backFromCardOfDay" class="backBtn">Назад</button>
+  <div id="cardOfDayOutput"></div>
+</div>
 
 <script>
-  // Показывать/скрывать секции
-  function showSection(sectionId) {
-    document.querySelectorAll('div[id$="Section"]').forEach(div => div.classList.add('hidden'));
-    document.getElementById('mainMenu').classList.add('hidden');
-    document.getElementById(sectionId).classList.remove('hidden');
+  // Функция переключения секций
+  function showSection(id) {
+    const sections = ['mainMenu', 'analyzeSection', 'forecastsSection', 'cardOfDaySection'];
+    sections.forEach(s => {
+      document.getElementById(s).classList.toggle('hidden', s !== id);
+    });
+    clearOutputs();
   }
-
   function showMainMenu() {
-    document.querySelectorAll('div[id$="Section"]').forEach(div => div.classList.add('hidden'));
-    document.getElementById('mainMenu').classList.remove('hidden');
+    showSection('mainMenu');
+  }
+  function clearOutputs() {
+    document.getElementById('output').textContent = '';
+    document.getElementById('forecastOutput').textContent = '';
+    document.getElementById('cardOfDayOutput').textContent = '';
   }
 
-  // Проверка формата даты (ДД.ММ.ГГГГ)
+  // Проверка формата даты ДД.ММ.ГГГГ
   function validateDate(dateStr) {
     const re = /^(\d{2})\.(\d{2})\.(\d{4})$/;
     if (!re.test(dateStr)) return false;
-    const parts = dateStr.split('.');
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
-    if (year < 1900 || year > 2100) return false;
-    if (month < 1 || month > 12) return false;
-    if (day < 1) return false;
-    const monthLengths = [31, (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 29 : 28, 31,30,31,30,31,31,30,31,30,31];
-    if (day > monthLengths[month - 1]) return false;
-    return true;
+    const [, d, m, y] = dateStr.match(re);
+    const date = new Date(`${y}-${m}-${d}`);
+    return date && (date.getDate() == +d) && (date.getMonth()+1 == +m) && (date.getFullYear() == +y);
   }
 
-  // Элементы главного меню
-  document.getElementById('btnPersonality').onclick = () => showSection('personalitySection');
-  document.getElementById('btnCompatibility').onclick = () => showSection('compatibilitySection');
+  // Обработчики кнопок меню
+  document.getElementById('btnAnalyze').onclick = () => showSection('analyzeSection');
+  document.getElementById('btnForecasts').onclick = () => showSection('forecastsSection');
+  document.getElementById('btnCardOfDay').onclick = () => showSection('cardOfDaySection');
 
   // Кнопки назад
-  document.getElementById('backFromPersonality').onclick = showMainMenu;
-  document.getElementById('backFromCompatibility').onclick = showMainMenu;
+  document.getElementById('backFromAnalyze').onclick = showMainMenu;
+  document.getElementById('backFromForecasts').onclick = showMainMenu;
+  document.getElementById('backFromCardOfDay').onclick = showMainMenu;
 
-  // Анализ личности (упрощённый пример)
-  document.getElementById('startPersonality').onclick = () => {
-    const date = document.getElementById('personBirthdate').value.trim();
-    const output = document.getElementById('personalityOutput');
+  // Анализ личности - простой пример
+  document.getElementById('startAnalyze').onclick = () => {
+    const date = document.getElementById('birthdateInput').value.trim();
+    const out = document.getElementById('output');
+    out.textContent = '';
+    if (!validateDate(date)) {
+      out.textContent = 'Ошибка: неверный формат даты. Используйте ДД.ММ.ГГГГ';
+      return;
+    }
+    // Заглушка анализа — можно развить
+    out.textContent = `Анализ для даты ${date}:\n\n- Вы человек с большим потенциалом.\n- Важно слушать себя и окружающих.\n- Наступает период перемен, будь готов.`;
+  };
+
+  // Прогнозы
+  document.getElementById('startForecasts').onclick = () => {
+    const date = document.getElementById('forecastBirthdate').value.trim();
+    const output = document.getElementById('forecastOutput');
     output.textContent = '';
     if (!validateDate(date)) {
       output.textContent = 'Ошибка: неверный формат даты. Используйте ДД.ММ.ГГГГ';
       return;
     }
-    // Заглушка анализа
-    output.textContent = `Анализ личности для даты рождения ${date}:\n\n- Число души: 7\n- Матрица судьбы: 4-6-9\n- Архетип: Мудрец\n- Кармический урок: Терпение`;
+    output.textContent = `Прогноз для даты рождения ${date}:\n\n- Сегодня удачный день для творчества.\n- Возможны неожиданные встречи.\n- Будьте внимательны к здоровью.`;
   };
 
-  // Совместимость (упрощённый пример)
-  document.getElementById('startCompatibility').onclick = () => {
-    const d1 = document.getElementById('firstBirthdate').value.trim();
-    const d2 = document.getElementById('secondBirthdate').value.trim();
-    const output = document.getElementById('compatibilityOutput');
-    output.textContent = '';
-    if (!validateDate(d1) || !validateDate(d2)) {
-      output.textContent = 'Ошибка: неверный формат даты у одного из участников. Используйте ДД.ММ.ГГГГ';
-      return;
-    }
-    // Простая демонстрация
-    output.textContent = `Совместимость для дат:\n1-й человек: ${d1}\n2-й человек: ${d2}\n\n- Совместимость душ: Высокая\n- Сильные стороны: Взаимопонимание и поддержка\n- Зоны конфликта: Ригидность`;
+  // Карта дня
+  document.getElementById('showCardOfDay').onclick = () => {
+    const output = document.getElementById('cardOfDayOutput');
+    const cards = [
+      "Туз Жезлов — начало нового пути",
+      "Двойка Кубков — гармония и союз",
+      "Тройка Мечей — испытания и уроки",
+      "Император — власть и стабильность",
+      "Звезда — надежда и вдохновение",
+    ];
+    const card = cards[Math.floor(Math.random() * cards.length)];
+    output.textContent = `Ваша карта дня:\n\n${card}`;
   };
+
+  // При загрузке показываем меню
+  showMainMenu();
 </script>
 
 </body>
