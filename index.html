@@ -1,0 +1,127 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matrix AI</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      margin: 0;
+      background-color: #0f0f0f;
+      color: #fff;
+    }
+    .screen {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      display: block;
+      margin: 10px 0;
+      padding: 12px;
+      font-size: 16px;
+      width: 100%;
+      border-radius: 10px;
+      border: none;
+      background-color: #272727;
+      color: white;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover {
+      background-color: #444;
+    }
+    .back-button {
+      margin-top: 30px;
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="main" class="screen active">
+    <h2>🔮 Matrix AI</h2>
+    <button onclick="showScreen('personality')">🧬 Анализ личности</button>
+    <button onclick="showScreen('compatibility')">❤️ Совместимость</button>
+    <button onclick="showScreen('forecasts')">📅 Прогнозы</button>
+    <button onclick="showScreen('astro')">🌌 Астрология</button>
+    <button onclick="showScreen('hand')">✋ Хиромантия</button>
+    <button onclick="showScreen('card')">🧩 Карта дня</button>
+    <button onclick="showScreen('stars')">🌟 Stars / Магазин</button>
+    <button onclick="showScreen('history')">📖 Мои расклады</button>
+  </div>
+
+  <div id="personality" class="screen">
+    <h3>🧬 Анализ личности</h3>
+    <p>Введите дату рождения:</p>
+    <input type="date" />
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="compatibility" class="screen">
+    <h3>❤️ Совместимость</h3>
+    <p>Введите вторую дату рождения:</p>
+    <input type="date" />
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="forecasts" class="screen">
+    <h3>📅 Прогнозы</h3>
+    <p>Выберите тип прогноза:</p>
+    <ul>
+      <li>Сегодня</li>
+      <li>Неделя</li>
+      <li>Месяц</li>
+    </ul>
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="astro" class="screen">
+    <h3>🌌 Астрология</h3>
+    <p>Энергии дня, стихии, циклы...</p>
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="hand" class="screen">
+    <h3>✋ Хиромантия</h3>
+    <p>Загрузите фото ладони:</p>
+    <input type="file" />
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="card" class="screen">
+    <h3>🧩 Карта дня</h3>
+    <p>Случайный аркан, совет и символ.</p>
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="stars" class="screen">
+    <h3>🌟 Stars и Магазин</h3>
+    <p>Обмен, задания, покупки.</p>
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <div id="history" class="screen">
+    <h3>📖 История раскладов</h3>
+    <p>Архив всех анализов.</p>
+    <button class="back-button" onclick="goBack()">⬅️ Назад</button>
+  </div>
+
+  <script>
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function goBack() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('main').classList.add('active');
+    }
+  </script>
+
+</body>
+</html>
