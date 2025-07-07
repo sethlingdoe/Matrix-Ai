@@ -5,83 +5,90 @@
   <title>Matrix AI</title>
   <style>
     body {
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       background: #111;
       color: #fff;
-      margin: 0;
       padding: 20px;
+      margin: 0;
     }
     .screen {
       display: none;
     }
-    .screen.active {
+    .active {
       display: block;
     }
     button {
       display: block;
       width: 100%;
       margin: 10px 0;
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
-      background: #222;
-      color: #fff;
-      border: 1px solid #333;
-      border-radius: 5px;
-      cursor: pointer;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 10px;
     }
-    input[type="date"] {
+    input {
       width: 100%;
       padding: 10px;
       font-size: 16px;
-      margin: 10px 0;
-      background: #222;
-      color: #fff;
-      border: 1px solid #333;
-      border-radius: 5px;
+      margin-bottom: 10px;
+      border-radius: 10px;
+      border: none;
     }
   </style>
 </head>
 <body>
-  <div id="mainMenu" class="screen active">
-    <h2>Matrix AI</h2>
-    <button onclick="openScreen('analysisScreen')">🧬 Анализ личности</button>
-    <button onclick="alert('В разработке')">❤️ Совместимость</button>
-    <button onclick="alert('В разработке')">📅 Прогнозы</button>
-    <button onclick="alert('В разработке')">🌌 Астрология</button>
-    <button onclick="alert('В разработке')">✋ Хиромантия</button>
-    <button onclick="alert('В разработке')">🧩 Карта дня</button>
-    <button onclick="alert('В разработке')">🌟 Stars / Магазин</button>
-    <button onclick="alert('В разработке')">📖 Мои расклады / История</button>
-  </div>  <div id="analysisScreen" class="screen">
-    <h3>🧬 Анализ личности</h3>
-    <label for="birthDate">Введите дату рождения:</label>
-    <input type="date" id="birthDate">
-    <button onclick="startAnalysis()">🔍 Подтвердить</button>
-    <button onclick="openScreen('mainMenu')">🔙 Назад</button>
-    <div id="result" style="margin-top: 20px;"></div>
+  <div id="main-menu" class="screen active">
+    <h1>🔮 Matrix AI</h1>
+    <button onclick="showScreen('analysis')">🧬 Анализ личности</button>
+    <button onclick="alert('Скоро будет доступно')">❤️ Совместимость</button>
+    <button onclick="alert('Скоро будет доступно')">📅 Прогнозы</button>
+    <button onclick="alert('Скоро будет доступно')">🌌 Астрология</button>
+    <button onclick="alert('Скоро будет доступно')">✋ Хиромантия</button>
+    <button onclick="alert('Скоро будет доступно')">🧩 Карта дня</button>
+    <button onclick="alert('Скоро будет доступно')">🌟 Магазин Stars</button>
+    <button onclick="alert('Скоро будет доступно')">📖 Мои расклады</button>
+  </div>  <div id="analysis" class="screen">
+    <h2>🧬 Введите дату рождения</h2>
+    <input type="date" id="birthdate" />
+    <button onclick="calculateSoulNumber()">🔍 Анализировать</button>
+    <button onclick="showScreen('main-menu')">🔙 Назад</button>
+    <div id="result"></div>
   </div>  <script>
-    function openScreen(id) {
-      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-      document.getElementById("result").innerHTML = "";
+      document.getElementById('result').innerHTML = '';
     }
 
-    function startAnalysis() {
-      const date = document.getElementById('birthDate').value;
-      if (!date) {
-        alert('Пожалуйста, введите дату рождения.');
-        return;
+    function calculateSoulNumber() {
+      const input = document.getElementById('birthdate').value;
+      if (!input) return alert('Введите дату рождения');
+
+      const digits = input.replace(/-/g, '').split('').map(Number);
+      let sum = digits.reduce((a, b) => a + b, 0);
+
+      while (sum > 9 && sum !== 11 && sum !== 22) {
+        sum = sum.toString().split('').reduce((a, b) => a + +b, 0);
       }
 
-      const [year, month, day] = date.split("-").map(Number);
+      const descriptions = {
+        1: 'Лидер. Амбициозный и целеустремлённый.',
+        2: 'Дипломат. Чувствительный и заботливый.',
+        3: 'Творец. Жизнерадостный и креативный.',
+        4: 'Стабильность. Трудолюбивый и надёжный.',
+        5: 'Путешественник. Любит свободу и перемены.',
+        6: 'Хранитель. Заботливый и ответственный.',
+        7: 'Мудрец. Интроверт и аналитик.',
+        8: 'Материалист. Умеет зарабатывать и управлять.',
+        9: 'Гуманист. Щедрый и сострадательный.',
+        11: 'Мастер-интуит. Духовный проводник.',
+        22: 'Мастер-строитель. Способен менять мир.'
+      };
 
-      // Простейший расчет (пример): сумма чисел дня и месяца
-      const soulNumber = (day + month) % 9 || 9;
-
-      let message = `\n👤 Число души: ${soulNumber}`;
-      if (soulNumber === 1) message += " — лидер, независимый, целеустремлённый.";
-      else if (soulNumber === 2) message += " — дипломат, чувствительный, миротворец.";
-      else if (soulNumber === 3) message += " — креативный, общительный, оптимист.";
-      else if (soulNumber === 4) message += " — практичный, стабильный, системный.";
-      else if (soulNumber === 5) message += " — адаптивный, любознательный, энергичный.";
-      else if (soulNumber === 6) message += " — забот
+      const resultText = `Ваше число души: <b>${sum}</b><br>${descriptions[sum] || 'Описание не найдено.'}`;
+      document.getElementById('result').innerHTML = `<p>${resultText}</p>`;
+    }
+  </script></body>
+</html>
