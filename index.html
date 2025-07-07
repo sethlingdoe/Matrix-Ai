@@ -1,94 +1,120 @@
-<!DOCTYPE html><html lang="ru">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix AI</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #fff;
-      padding: 20px;
-      margin: 0;
-    }
-    .screen {
-      display: none;
-    }
-    .active {
-      display: block;
-    }
-    button {
-      display: block;
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      font-size: 16px;
-      background-color: #333;
-      color: white;
-      border: none;
-      border-radius: 10px;
-    }
-    input {
-      width: 100%;
-      padding: 10px;
-      font-size: 16px;
-      margin-bottom: 10px;
-      border-radius: 10px;
-      border: none;
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Matrix AI Mini App</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 10px; background: #111; color: #eee; }
+  button { margin: 5px 0; padding: 10px; width: 100%; font-size: 18px; background: #222; color: #eee; border: none; border-radius: 6px; cursor: pointer; }
+  button:hover { background: #444; }
+  #output { margin-top: 15px; white-space: pre-wrap; }
+  .hidden { display: none; }
+  #backBtn { margin-top: 10px; background: #555; }
+  input { width: 100%; padding: 8px; font-size: 16px; border-radius: 6px; border: 1px solid #444; margin-bottom: 10px; background: #222; color: #eee; }
+  label { margin-bottom: 4px; display: block; }
+</style>
 </head>
 <body>
-  <div id="main-menu" class="screen active">
-    <h1>🔮 Matrix AI</h1>
-    <button onclick="showScreen('analysis')">🧬 Анализ личности</button>
-    <button onclick="alert('Скоро будет доступно')">❤️ Совместимость</button>
-    <button onclick="alert('Скоро будет доступно')">📅 Прогнозы</button>
-    <button onclick="alert('Скоро будет доступно')">🌌 Астрология</button>
-    <button onclick="alert('Скоро будет доступно')">✋ Хиромантия</button>
-    <button onclick="alert('Скоро будет доступно')">🧩 Карта дня</button>
-    <button onclick="alert('Скоро будет доступно')">🌟 Магазин Stars</button>
-    <button onclick="alert('Скоро будет доступно')">📖 Мои расклады</button>
-  </div>  <div id="analysis" class="screen">
-    <h2>🧬 Введите дату рождения</h2>
-    <input type="date" id="birthdate" />
-    <button onclick="calculateSoulNumber()">🔍 Анализировать</button>
-    <button onclick="showScreen('main-menu')">🔙 Назад</button>
-    <div id="result"></div>
-  </div>  <script>
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-      document.getElementById('result').innerHTML = '';
+
+<div id="mainMenu">
+  <h2>Matrix AI - Главное меню</h2>
+  <button id="btnPersonality">🧬 Анализ личности</button>
+  <button id="btnCompatibility">❤️ Совместимость</button>
+  <button id="btnForecasts">📅 Прогнозы</button>
+  <button id="btnAstrology">🌌 Астрология</button>
+  <button id="btnPalmistry">✋ Хиромантия</button>
+  <button id="btnCardOfDay">🧩 Карта дня</button>
+  <button id="btnStarsShop">🌟 Stars / Магазин</button>
+  <button id="btnHistory">📖 История раскладов</button>
+</div>
+
+<div id="personalitySection" class="hidden">
+  <h2>🧬 Анализ личности</h2>
+  <label for="personBirthdate">Введите дату рождения (ДД.ММ.ГГГГ):</label>
+  <input type="text" id="personBirthdate" placeholder="01.01.2000" />
+  <button id="startPersonality">Начать анализ</button>
+  <button id="backFromPersonality" class="backBtn">Назад</button>
+  <div id="personalityOutput"></div>
+</div>
+
+<div id="compatibilitySection" class="hidden">
+  <h2>❤️ Совместимость</h2>
+  <label for="firstBirthdate">Дата рождения 1-го человека (ДД.ММ.ГГГГ):</label>
+  <input type="text" id="firstBirthdate" placeholder="01.01.2000" />
+  <label for="secondBirthdate">Дата рождения 2-го человека (ДД.ММ.ГГГГ):</label>
+  <input type="text" id="secondBirthdate" placeholder="01.01.2000" />
+  <button id="startCompatibility">Проверить совместимость</button>
+  <button id="backFromCompatibility" class="backBtn">Назад</button>
+  <div id="compatibilityOutput"></div>
+</div>
+
+<!-- Остальные секции по аналогии... -->
+
+<script>
+  // Показывать/скрывать секции
+  function showSection(sectionId) {
+    document.querySelectorAll('div[id$="Section"]').forEach(div => div.classList.add('hidden'));
+    document.getElementById('mainMenu').classList.add('hidden');
+    document.getElementById(sectionId).classList.remove('hidden');
+  }
+
+  function showMainMenu() {
+    document.querySelectorAll('div[id$="Section"]').forEach(div => div.classList.add('hidden'));
+    document.getElementById('mainMenu').classList.remove('hidden');
+  }
+
+  // Проверка формата даты (ДД.ММ.ГГГГ)
+  function validateDate(dateStr) {
+    const re = /^(\d{2})\.(\d{2})\.(\d{4})$/;
+    if (!re.test(dateStr)) return false;
+    const parts = dateStr.split('.');
+    const day = parseInt(parts[0], 10);
+    const month = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+    if (year < 1900 || year > 2100) return false;
+    if (month < 1 || month > 12) return false;
+    if (day < 1) return false;
+    const monthLengths = [31, (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 29 : 28, 31,30,31,30,31,31,30,31,30,31];
+    if (day > monthLengths[month - 1]) return false;
+    return true;
+  }
+
+  // Элементы главного меню
+  document.getElementById('btnPersonality').onclick = () => showSection('personalitySection');
+  document.getElementById('btnCompatibility').onclick = () => showSection('compatibilitySection');
+
+  // Кнопки назад
+  document.getElementById('backFromPersonality').onclick = showMainMenu;
+  document.getElementById('backFromCompatibility').onclick = showMainMenu;
+
+  // Анализ личности (упрощённый пример)
+  document.getElementById('startPersonality').onclick = () => {
+    const date = document.getElementById('personBirthdate').value.trim();
+    const output = document.getElementById('personalityOutput');
+    output.textContent = '';
+    if (!validateDate(date)) {
+      output.textContent = 'Ошибка: неверный формат даты. Используйте ДД.ММ.ГГГГ';
+      return;
     }
+    // Заглушка анализа
+    output.textContent = `Анализ личности для даты рождения ${date}:\n\n- Число души: 7\n- Матрица судьбы: 4-6-9\n- Архетип: Мудрец\n- Кармический урок: Терпение`;
+  };
 
-    function calculateSoulNumber() {
-      const input = document.getElementById('birthdate').value;
-      if (!input) return alert('Введите дату рождения');
-
-      const digits = input.replace(/-/g, '').split('').map(Number);
-      let sum = digits.reduce((a, b) => a + b, 0);
-
-      while (sum > 9 && sum !== 11 && sum !== 22) {
-        sum = sum.toString().split('').reduce((a, b) => a + +b, 0);
-      }
-
-      const descriptions = {
-        1: 'Лидер. Амбициозный и целеустремлённый.',
-        2: 'Дипломат. Чувствительный и заботливый.',
-        3: 'Творец. Жизнерадостный и креативный.',
-        4: 'Стабильность. Трудолюбивый и надёжный.',
-        5: 'Путешественник. Любит свободу и перемены.',
-        6: 'Хранитель. Заботливый и ответственный.',
-        7: 'Мудрец. Интроверт и аналитик.',
-        8: 'Материалист. Умеет зарабатывать и управлять.',
-        9: 'Гуманист. Щедрый и сострадательный.',
-        11: 'Мастер-интуит. Духовный проводник.',
-        22: 'Мастер-строитель. Способен менять мир.'
-      };
-
-      const resultText = `Ваше число души: <b>${sum}</b><br>${descriptions[sum] || 'Описание не найдено.'}`;
-      document.getElementById('result').innerHTML = `<p>${resultText}</p>`;
+  // Совместимость (упрощённый пример)
+  document.getElementById('startCompatibility').onclick = () => {
+    const d1 = document.getElementById('firstBirthdate').value.trim();
+    const d2 = document.getElementById('secondBirthdate').value.trim();
+    const output = document.getElementById('compatibilityOutput');
+    output.textContent = '';
+    if (!validateDate(d1) || !validateDate(d2)) {
+      output.textContent = 'Ошибка: неверный формат даты у одного из участников. Используйте ДД.ММ.ГГГГ';
+      return;
     }
-  </script></body>
+    // Простая демонстрация
+    output.textContent = `Совместимость для дат:\n1-й человек: ${d1}\n2-й человек: ${d2}\n\n- Совместимость душ: Высокая\n- Сильные стороны: Взаимопонимание и поддержка\n- Зоны конфликта: Ригидность`;
+  };
+</script>
+
+</body>
 </html>
