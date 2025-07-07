@@ -1,104 +1,87 @@
-<!DOCTYPE html>
-<html lang="ru">
+<!DOCTYPE html><html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Matrix AI</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #111;
-      color: #eee;
+      font-family: sans-serif;
+      background: #111;
+      color: #fff;
       margin: 0;
       padding: 20px;
     }
     .screen {
       display: none;
     }
-    .active {
+    .screen.active {
       display: block;
     }
     button {
       display: block;
       width: 100%;
-      padding: 15px;
       margin: 10px 0;
-      font-size: 18px;
-      background-color: #222;
+      padding: 10px;
+      font-size: 16px;
+      background: #222;
       color: #fff;
-      border: 1px solid #444;
-      border-radius: 8px;
+      border: 1px solid #333;
+      border-radius: 5px;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #333;
-    }
-    .input-group {
-      margin-top: 20px;
     }
     input[type="date"] {
       width: 100%;
-      padding: 12px;
+      padding: 10px;
       font-size: 16px;
-      border-radius: 6px;
-      border: 1px solid #555;
-      background-color: #222;
-      color: #eee;
+      margin: 10px 0;
+      background: #222;
+      color: #fff;
+      border: 1px solid #333;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-
-  <!-- Главное меню -->
   <div id="mainMenu" class="screen active">
-    <h2>🌌 Matrix AI</h2>
+    <h2>Matrix AI</h2>
     <button onclick="openScreen('analysisScreen')">🧬 Анализ личности</button>
-    <button onclick="alert('Скоро будет ❤️')">❤️ Совместимость</button>
-    <button onclick="alert('Скоро будет 📅')">📅 Прогнозы</button>
-    <button onclick="alert('Скоро будет 🌌')">🌌 Астрология</button>
-    <button onclick="alert('Скоро будет ✋')">✋ Хиромантия</button>
-    <button onclick="alert('Скоро будет 🧩')">🧩 Карта дня</button>
-    <button onclick="alert('Скоро будет 🌟')">🌟 Stars / Магазин</button>
-    <button onclick="alert('Скоро будет 📖')">📖 Мои расклады</button>
-  </div>
-
-  <!-- Анализ личности -->
-  <div id="analysisScreen" class="screen">
-    <h3>🧬 Введите дату рождения</h3>
-    <div class="input-group">
-      <input type="date" id="birthdateInput" />
-    </div>
-    <button onclick="submitBirthdate()">✅ Подтвердить</button>
-    <button onclick="goBack()">🔙 Назад</button>
-  </div>
-
-  <!-- Результат -->
-  <div id="resultScreen" class="screen">
-    <h3>🔮 Результат анализа</h3>
-    <p id="resultText">Здесь будет результат анализа по дате</p>
-    <button onclick="goBackToMain()">🏠 В меню</button>
-  </div>
-
-  <script>
-    function openScreen(screenId) {
-      document.querySelectorAll('.screen').forEach(screen => {
-        screen.classList.remove('active');
-      });
-      document.getElementById(screenId).classList.add('active');
+    <button onclick="alert('В разработке')">❤️ Совместимость</button>
+    <button onclick="alert('В разработке')">📅 Прогнозы</button>
+    <button onclick="alert('В разработке')">🌌 Астрология</button>
+    <button onclick="alert('В разработке')">✋ Хиромантия</button>
+    <button onclick="alert('В разработке')">🧩 Карта дня</button>
+    <button onclick="alert('В разработке')">🌟 Stars / Магазин</button>
+    <button onclick="alert('В разработке')">📖 Мои расклады / История</button>
+  </div>  <div id="analysisScreen" class="screen">
+    <h3>🧬 Анализ личности</h3>
+    <label for="birthDate">Введите дату рождения:</label>
+    <input type="date" id="birthDate">
+    <button onclick="startAnalysis()">🔍 Подтвердить</button>
+    <button onclick="openScreen('mainMenu')">🔙 Назад</button>
+    <div id="result" style="margin-top: 20px;"></div>
+  </div>  <script>
+    function openScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      document.getElementById("result").innerHTML = "";
     }
 
-    function goBack() {
-      openScreen('mainMenu');
-    }
-
-    function goBackToMain() {
-      openScreen('mainMenu');
-    }
-
-    function submitBirthdate() {
-      const input = document.getElementById('birthdateInput').value;
-      if (!input) {
-        alert('Пожалуйста, введите дату.');
+    function startAnalysis() {
+      const date = document.getElementById('birthDate').value;
+      if (!date) {
+        alert('Пожалуйста, введите дату рождения.');
         return;
       }
-      const result = `Ты родился ${input}. Анализ
+
+      const [year, month, day] = date.split("-").map(Number);
+
+      // Простейший расчет (пример): сумма чисел дня и месяца
+      const soulNumber = (day + month) % 9 || 9;
+
+      let message = `\n👤 Число души: ${soulNumber}`;
+      if (soulNumber === 1) message += " — лидер, независимый, целеустремлённый.";
+      else if (soulNumber === 2) message += " — дипломат, чувствительный, миротворец.";
+      else if (soulNumber === 3) message += " — креативный, общительный, оптимист.";
+      else if (soulNumber === 4) message += " — практичный, стабильный, системный.";
+      else if (soulNumber === 5) message += " — адаптивный, любознательный, энергичный.";
+      else if (soulNumber === 6) message += " — забот
