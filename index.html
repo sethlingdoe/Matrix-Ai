@@ -1,71 +1,104 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Matrix AI - Mini App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matrix AI</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f9; }
-    .container { max-width: 600px; margin: 0 auto; }
-    .menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .menu-item { background: #6200ea; color: white; padding: 15px; text-align: center; border-radius: 8px; cursor: pointer; }
-    .menu-item:hover { background: #3700b3; }
-    .section { margin-top: 20px; padding: 20px; background: white; border-radius: 8px; }
-    h1, h2 { text-align: center; }
-    .input-field { margin: 10px 0; }
-    .input-field input { padding: 10px; width: 100%; border-radius: 5px; border: 1px solid #ccc; }
-    .button { background: #6200ea; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; }
-    .button:hover { background: #3700b3; }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: #eee;
+      margin: 0;
+      padding: 20px;
+    }
+    .screen {
+      display: none;
+    }
+    .active {
+      display: block;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 18px;
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #444;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #333;
+    }
+    .input-group {
+      margin-top: 20px;
+    }
+    input[type="date"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #555;
+      background-color: #222;
+      color: #eee;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Matrix AI</h1>
-    <!-- Главное меню -->
-    <div class="menu">
-      <div class="menu-item">🧬 Анализ личности</div>
-      <div class="menu-item">❤️ Совместимость</div>
-      <div class="menu-item">📅 Прогнозы</div>
-      <div class="menu-item">🌌 Астрология</div>
-      <div class="menu-item">✋ Хиромантия</div>
-      <div class="menu-item">🧩 Карта дня</div>
-      <div class="menu-item">🌟 Stars / Магазин</div>
-      <div class="menu-item">📖 Мои расклады</div>
-    </div>
 
-    <!-- Пример секции: Анализ личности -->
-    <div class="section">
-      <h2>🧬 Анализ личности</h2>
-      <div class="input-field">
-        <label>Введите дату рождения:</label>
-        <input type="date" id="birthdate" required>
-      </div>
-      <div class="input-field">
-        <label>Загрузите фото ладони (для хиромантии):</label>
-        <input type="file" id="palm-image" accept="image/*">
-      </div>
-      <button class="button" onclick="analyzePersonality()">Анализировать</button>
-      <div id="result" style="margin-top: 20px;">
-        <!-- Результаты анализа будут здесь -->
-      </div>
+  <!-- Главное меню -->
+  <div id="mainMenu" class="screen active">
+    <h2>🌌 Matrix AI</h2>
+    <button onclick="openScreen('analysisScreen')">🧬 Анализ личности</button>
+    <button onclick="alert('Скоро будет ❤️')">❤️ Совместимость</button>
+    <button onclick="alert('Скоро будет 📅')">📅 Прогнозы</button>
+    <button onclick="alert('Скоро будет 🌌')">🌌 Астрология</button>
+    <button onclick="alert('Скоро будет ✋')">✋ Хиромантия</button>
+    <button onclick="alert('Скоро будет 🧩')">🧩 Карта дня</button>
+    <button onclick="alert('Скоро будет 🌟')">🌟 Stars / Магазин</button>
+    <button onclick="alert('Скоро будет 📖')">📖 Мои расклады</button>
+  </div>
+
+  <!-- Анализ личности -->
+  <div id="analysisScreen" class="screen">
+    <h3>🧬 Введите дату рождения</h3>
+    <div class="input-group">
+      <input type="date" id="birthdateInput" />
     </div>
+    <button onclick="submitBirthdate()">✅ Подтвердить</button>
+    <button onclick="goBack()">🔙 Назад</button>
+  </div>
+
+  <!-- Результат -->
+  <div id="resultScreen" class="screen">
+    <h3>🔮 Результат анализа</h3>
+    <p id="resultText">Здесь будет результат анализа по дате</p>
+    <button onclick="goBackToMain()">🏠 В меню</button>
   </div>
 
   <script>
-    function analyzePersonality() {
-      const birthdate = document.getElementById('birthdate').value;
-      const resultDiv = document.getElementById('result');
-      if (birthdate) {
-        // Здесь будет вызов API для анализа матрицы судьбы
-        resultDiv.innerHTML = `
-          <p><b>Число души:</b> Рассчитывается...</p>
-          <p><b>Матрица судьбы:</b> Анализ...</p>
-          <p><b>Кармический урок:</b> Рекомендации...</p>
-        `;
-      } else {
-        resultDiv.innerHTML = `<p style="color: red;">Пожалуйста, введите дату рождения.</p>`;
-      }
+    function openScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(screen => {
+        screen.classList.remove('active');
+      });
+      document.getElementById(screenId).classList.add('active');
     }
-  </script>
-</body>
-</html>
+
+    function goBack() {
+      openScreen('mainMenu');
+    }
+
+    function goBackToMain() {
+      openScreen('mainMenu');
+    }
+
+    function submitBirthdate() {
+      const input = document.getElementById('birthdateInput').value;
+      if (!input) {
+        alert('Пожалуйста, введите дату.');
+        return;
+      }
+      const result = `Ты родился ${input}. Анализ
