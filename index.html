@@ -1,42 +1,101 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Matrix AI</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #121212; color: #eee; margin: 0; padding: 20px; }
-  h1 { text-align: center; margin-bottom: 30px; }
-  button {
-    display: block;
-    width: 100%;
-    margin: 10px 0;
-    padding: 15px;
-    font-size: 18px;
-    color: #121212;
-    background: #1db954;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background 0.3s ease;
-  }
-  button:hover {
-    background: #17a44c;
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>Matrix AI – Анализ личности</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #1e1e2f, #2a2a3f);
+            color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 2em;
+        }
+        input[type="date"] {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+        }
+    </style>
 </head>
 <body>
+    <h1>🔍 Введи дату рождения</h1>
+    <input type="date" id="birthDate">
+    <button onclick="analyze()">Анализировать</button>
+    <div class="result" id="result"></div>
 
-<h1>Matrix AI</h1>
+    <script>
+        function analyze() {
+            const dateInput = document.getElementById('birthDate').value;
+            if (!dateInput) return alert("Сначала выбери дату");
 
-<button onclick="alert('🧬 Анализ личности')">🧬 Анализ личности</button>
-<button onclick="alert('❤️ Совместимость')">❤️ Совместимость</button>
-<button onclick="alert('📅 Прогнозы')">📅 Прогнозы</button>
-<button onclick="alert('🌌 Астрология')">🌌 Астрология</button>
-<button onclick="alert('✋ Хиромантия')">✋ Хиромантия</button>
-<button onclick="alert('🧩 Карта дня')">🧩 Карта дня</button>
-<button onclick="alert('🌟 Stars / Магазин')">🌟 Stars / Магазин</button>
-<button onclick="alert('📖 Мои расклады')">📖 Мои расклады</button>
+            const date = new Date(dateInput);
+            const day = date.getDate();
+            const year = date.getFullYear();
 
+            // Число души
+            const soulNumber = day;
+
+            // Число пути
+            const sumDigits = dateInput.replace(/-/g, '').split('').reduce((a, b) => +a + +b, 0);
+            const pathNumber = sumDigits > 9 ? sumDigits.toString().split('').reduce((a, b) => +a + +b, 0) : sumDigits;
+
+            // Архетип
+            const archetypes = [
+                "Архетип Исследователя", "Архетип Лидера", "Архетип Дипломата",
+                "Архетип Художника", "Архетип Строителя", "Архетип Искателя",
+                "Архетип Наставника", "Архетип Мистика", "Архетип Воителя", "Архетип Мудреца"
+            ];
+            const archetype = archetypes[year % 10];
+
+            // Кармический урок
+            const karmaHints = {
+                1: "Урок лидерства и самостоятельности.",
+                2: "Урок терпения и дипломатии.",
+                3: "Урок самовыражения и радости.",
+                4: "Урок дисциплины и ответственности.",
+                5: "Урок свободы и перемен.",
+                6: "Урок любви, семьи и заботы.",
+                7: "Урок духовности и анализа.",
+                8: "Урок силы, власти и денег.",
+                9: "Урок сострадания и завершения."
+            };
+            const karma = karmaHints[(soulNumber <= 9) ? soulNumber : soulNumber % 9] || "Неопределён";
+
+            document.getElementById('result').innerHTML = `
+                <p><strong>📅 Дата рождения:</strong> ${date.toLocaleDateString()}</p>
+                <p><strong>🔢 Число души:</strong> ${soulNumber}</p>
+                <p><strong>🛤️ Число жизненного пути:</strong> ${pathNumber}</p>
+                <p><strong>🧙 Архетип:</strong> ${archetype}</p>
+                <p><strong>⚖️ Кармический урок:</strong> ${karma}</p>
+            `;
+        }
+    </script>
 </body>
 </html>
