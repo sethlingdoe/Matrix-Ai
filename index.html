@@ -1,119 +1,89 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Matrix AI Mini App</title>
-<style>
-  body { font-family: Arial, sans-serif; padding: 10px; background: #111; color: #eee; }
-  button { margin: 5px 0; padding: 10px; width: 100%; font-size: 18px; background: #222; color: #eee; border: none; border-radius: 6px; cursor: pointer; }
-  button:hover { background: #444; }
-  #output { margin-top: 15px; white-space: pre-wrap; }
-  .hidden { display: none; }
-  #backBtn { margin-top: 10px; background: #555; }
-  input { width: 100%; padding: 8px; font-size: 16px; border-radius: 6px; border: 1px solid #444; margin-bottom: 10px; background: #222; color: #eee; }
-  label { margin-bottom: 4px; display: block; }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Matrix AI Mini App</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #111; color: #eee; padding: 20px; }
+    button { display: block; width: 100%; margin: 8px 0; padding: 12px; font-size: 16px; background: #222; color: #eee; border: none; border-radius: 8px; cursor: pointer; }
+    button:hover { background: #333; }
+    input { width: 100%; padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #444; background: #222; color: #eee; margin-bottom: 10px; }
+    label { display: block; margin-bottom: 6px; }
+    .hidden { display: none; }
+    #output { margin-top: 20px; white-space: pre-wrap; }
+  </style>
 </head>
 <body>
 
 <div id="mainMenu">
   <h2>Matrix AI - Главное меню</h2>
-  <button id="btnPersonality">🧬 Анализ личности</button>
-  <button id="btnCompatibility">❤️ Совместимость</button>
-  <button id="btnForecasts">📅 Прогнозы</button>
-  <button id="btnAstrology">🌌 Астрология</button>
-  <button id="btnPalmistry">✋ Хиромантия</button>
-  <button id="btnCardOfDay">🧩 Карта дня</button>
-  <button id="btnStarsShop">🌟 Stars / Магазин</button>
-  <button id="btnHistory">📖 История раскладов</button>
+  <button onclick="showSection('personalitySection')">🧬 Анализ личности</button>
+  <button onclick="showSection('compatibilitySection')">❤️ Совместимость</button>
 </div>
 
 <div id="personalitySection" class="hidden">
   <h2>🧬 Анализ личности</h2>
-  <label for="personBirthdate">Введите дату рождения (ДД.ММ.ГГГГ):</label>
-  <input type="text" id="personBirthdate" placeholder="01.01.2000" />
-  <button id="startPersonality">Начать анализ</button>
-  <button id="backFromPersonality" class="backBtn">Назад</button>
+  <label for="birthdate">Введите дату рождения (ДД.ММ.ГГГГ):</label>
+  <input type="text" id="birthdate" placeholder="01.01.2000">
+  <button onclick="runPersonalityAnalysis()">Начать анализ</button>
+  <button onclick="showMainMenu()">← Назад</button>
   <div id="personalityOutput"></div>
 </div>
 
 <div id="compatibilitySection" class="hidden">
   <h2>❤️ Совместимость</h2>
-  <label for="firstBirthdate">Дата рождения 1-го человека (ДД.ММ.ГГГГ):</label>
-  <input type="text" id="firstBirthdate" placeholder="01.01.2000" />
-  <label for="secondBirthdate">Дата рождения 2-го человека (ДД.ММ.ГГГГ):</label>
-  <input type="text" id="secondBirthdate" placeholder="01.01.2000" />
-  <button id="startCompatibility">Проверить совместимость</button>
-  <button id="backFromCompatibility" class="backBtn">Назад</button>
+  <label for="date1">Дата рождения 1-го человека:</label>
+  <input type="text" id="date1" placeholder="01.01.2000">
+  <label for="date2">Дата рождения 2-го человека:</label>
+  <input type="text" id="date2" placeholder="02.02.2000">
+  <button onclick="runCompatibilityCheck()">Проверить совместимость</button>
+  <button onclick="showMainMenu()">← Назад</button>
   <div id="compatibilityOutput"></div>
 </div>
 
-<!-- Остальные секции по аналогии... -->
-
 <script>
-  // Показывать/скрывать секции
-  function showSection(sectionId) {
-    document.querySelectorAll('div[id$="Section"]').forEach(div => div.classList.add('hidden'));
+  function showSection(id) {
     document.getElementById('mainMenu').classList.add('hidden');
-    document.getElementById(sectionId).classList.remove('hidden');
+    document.querySelectorAll('div[id$="Section"]').forEach(sec => sec.classList.add('hidden'));
+    document.getElementById(id).classList.remove('hidden');
   }
 
   function showMainMenu() {
-    document.querySelectorAll('div[id$="Section"]').forEach(div => div.classList.add('hidden'));
+    document.querySelectorAll('div[id$="Section"]').forEach(sec => sec.classList.add('hidden'));
     document.getElementById('mainMenu').classList.remove('hidden');
   }
 
-  // Проверка формата даты (ДД.ММ.ГГГГ)
   function validateDate(dateStr) {
     const re = /^(\d{2})\.(\d{2})\.(\d{4})$/;
     if (!re.test(dateStr)) return false;
-    const parts = dateStr.split('.');
-    const day = parseInt(parts[0], 10);
-    const month = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
-    if (year < 1900 || year > 2100) return false;
-    if (month < 1 || month > 12) return false;
-    if (day < 1) return false;
-    const monthLengths = [31, (year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0)) ? 29 : 28, 31,30,31,30,31,31,30,31,30,31];
-    if (day > monthLengths[month - 1]) return false;
-    return true;
+    const [_, dd, mm, yyyy] = dateStr.match(re);
+    const d = new Date(`${yyyy}-${mm}-${dd}`);
+    return d.getFullYear() == yyyy && d.getMonth() + 1 == mm && d.getDate() == dd;
   }
 
-  // Элементы главного меню
-  document.getElementById('btnPersonality').onclick = () => showSection('personalitySection');
-  document.getElementById('btnCompatibility').onclick = () => showSection('compatibilitySection');
-
-  // Кнопки назад
-  document.getElementById('backFromPersonality').onclick = showMainMenu;
-  document.getElementById('backFromCompatibility').onclick = showMainMenu;
-
-  // Анализ личности (упрощённый пример)
-  document.getElementById('startPersonality').onclick = () => {
-    const date = document.getElementById('personBirthdate').value.trim();
-    const output = document.getElementById('personalityOutput');
-    output.textContent = '';
+  function runPersonalityAnalysis() {
+    const date = document.getElementById('birthdate').value.trim();
+    const out = document.getElementById('personalityOutput');
+    out.textContent = '';
     if (!validateDate(date)) {
-      output.textContent = 'Ошибка: неверный формат даты. Используйте ДД.ММ.ГГГГ';
+      out.textContent = "❌ Неверный формат даты. Используйте ДД.ММ.ГГГГ";
       return;
     }
-    // Заглушка анализа
-    output.textContent = `Анализ личности для даты рождения ${date}:\n\n- Число души: 7\n- Матрица судьбы: 4-6-9\n- Архетип: Мудрец\n- Кармический урок: Терпение`;
-  };
+    out.textContent = `🔍 Анализ личности для: ${date}\n\n• Число судьбы: 7\n• Архетип: Мудрец\n• Слабая сторона: Перфекционизм\n• Сильная сторона: Интуиция и анализ`;
+  }
 
-  // Совместимость (упрощённый пример)
-  document.getElementById('startCompatibility').onclick = () => {
-    const d1 = document.getElementById('firstBirthdate').value.trim();
-    const d2 = document.getElementById('secondBirthdate').value.trim();
-    const output = document.getElementById('compatibilityOutput');
-    output.textContent = '';
+  function runCompatibilityCheck() {
+    const d1 = document.getElementById('date1').value.trim();
+    const d2 = document.getElementById('date2').value.trim();
+    const out = document.getElementById('compatibilityOutput');
+    out.textContent = '';
     if (!validateDate(d1) || !validateDate(d2)) {
-      output.textContent = 'Ошибка: неверный формат даты у одного из участников. Используйте ДД.ММ.ГГГГ';
+      out.textContent = "❌ Ошибка в формате одной из дат.";
       return;
     }
-    // Простая демонстрация
-    output.textContent = `Совместимость для дат:\n1-й человек: ${d1}\n2-й человек: ${d2}\n\n- Совместимость душ: Высокая\n- Сильные стороны: Взаимопонимание и поддержка\n- Зоны конфликта: Ригидность`;
-  };
+    out.textContent = `🔗 Совместимость между:\n${d1} и ${d2}\n\n• Душевная связь: 83%\n• Зоны роста: Эмоциональная близость\n• Совместимость: Высокая 🌟`;
+  }
 </script>
 
 </body>
